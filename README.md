@@ -121,6 +121,25 @@ Whenever an agent receives a correction or experiences a runtime friction point:
 
 ---
 
+## 📥 Installation & Distribution Options
+
+Projects created from this template can adopt multi-channel distribution based on their target platform:
+
+### Package Managers (e.g. WinGet, Scoop, Homebrew, Apt)
+Provide clean zero-touch commands for developers and power users:
+```bash
+# Example: Package manager installation
+{{PACKAGE_MANAGER_INSTALL_COMMAND}}
+```
+
+### Guided Graphical Setup Wizard
+Provide a zero-elevation setup wizard for non-technical users installing into user-space (e.g., `%LOCALAPPDATA%` or `~/bin`) with Start Menu/Desktop shortcut creation and automated uninstallation support.
+
+### Standalone Portable Bundle
+Provide zero-install portable archives (`.zip` / `.tar.gz`) attached to GitHub Releases for instant portable execution without registry or filesystem mutation.
+
+---
+
 ## 📂 Repository Tour
 
 ```text

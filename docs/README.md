@@ -18,6 +18,7 @@ flowchart TD
     D4["04-ux.md<br/><b>UX & Interaction Flows</b><br/><i>How is it experienced?</i>"]
     D5["05-roadmap.md<br/><b>Milestones & Task Board</b><br/><i>What do we build next?</i>"]
     D6["06-qa-and-validation.md<br/><b>QA & Empirical Validation</b><br/><i>How is it verified?</i>"]
+    METH["multi-agent-methodology.md<br/><b>Multi-Agent Orchestration</b><br/><i>How do Antigravity & Copilot collaborate?</i>"]
     ADR["decisions/<br/><b>Architecture Decision Records</b><br/><i>Why did we choose X over Y?</i>"]
     LL["lessons-learned.md<br/><b>Continuous Learning Log</b><br/><i>What pitfalls did we hit?</i>"]
 
@@ -26,6 +27,7 @@ flowchart TD
     D3 --> D4
     D4 --> D5
     D5 --> D6
+    D6 --> METH
     D3 -.-> ADR
     D6 -.-> LL
 ```
@@ -42,6 +44,7 @@ flowchart TD
 | [`04-ux.md`](04-ux.md) | **Interaction Model** | UI screens, state diagrams (empty/loading/error/success), entry points (CLI/desktop/web), keyboard shortcuts, accessibility, and i18n rules. |
 | [`05-roadmap.md`](05-roadmap.md) | **Single Source of Truth for Work** | Phased milestones (M0 through M7). Parallel tasks marked with `⇉`. Checked off with date and git commit ID upon verification. |
 | [`06-qa-and-validation.md`](06-qa-and-validation.md) | **Empirical Proof & Test Matrices** | Empirical measurements of NFR budgets, real-environment hardware/manual QA matrices, edge case regressions, and incident reporting. |
+| [`multi-agent-methodology.md`](multi-agent-methodology.md) | **Parallel & Cloud Agent Orchestration** | Hub-and-Spoke model, Sole Committer Protocol, complexity tiers, GitHub Copilot cloud agent integration, and Draft PR workflows. |
 | [`decisions/`](decisions/) | **Architecture Decision Records (ADR)** | Lightweight records using [`0000-template.md`](decisions/0000-template.md) capturing context, choices considered, and rationale. |
 | [`lessons-learned.md`](lessons-learned.md) | **Living Memory & Rules Engine** | Feedback log turning user corrections and debugging insights into enforceable engineering rules. Generic rules tagged `[KIT]` feed back into upstream tooling. |
 | [`model-fallback-log.md`](model-fallback-log.md) | **Model Routing & Quota Audit** | Audit log tracking tasks run on fallback or lower-tier models, creating mandatory review items during M5 hardening. |
@@ -61,10 +64,10 @@ Never write assertions into technical documents that have not been tested or mea
 When a developer corrects a design or an agent makes a mistake:
 1. Do not merely apologize or fix the code in isolation.
 2. Record the root cause and the new preventative rule in [`lessons-learned.md`](lessons-learned.md).
-3. If the rule is universally binding across all conversations, promote it to [`AGENTS.md`](../AGENTS.md).
+3. If the rule is universally binding across all conversations, promote it to [`AGENTS.md`](../AGENTS.md) and [`.github/copilot-instructions.md`](../.github/copilot-instructions.md).
 
 ### 3. Disjoint Modules for Parallel Workers
-[`03-architecture.md`](03-architecture.md) enforces that independent components live in separated directories (e.g., `core/`, `platform/`, `ui/`). This enables multi-agent swarms (`project-worker` subagents) to work concurrently in isolated git worktrees without causing merge conflicts.
+[`03-architecture.md`](03-architecture.md) enforces that independent components live in separated directories (e.g., `core/`, `platform/`, `ui/`). This enables multi-agent swarms (`project-worker` subagents and GitHub Copilot Agent) to work concurrently in isolated git worktrees or branches without causing merge conflicts.
 
 ---
 

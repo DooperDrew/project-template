@@ -2,16 +2,17 @@
 
 [![Spec-First](https://img.shields.io/badge/Architecture-Spec--First-blue.svg)](docs/README.md)
 [![Agent-Ready](https://img.shields.io/badge/AI-Agent--Ready-success.svg)](AGENTS.md)
+[![Multi-Agent](https://img.shields.io/badge/Workflow-Antigravity%20%2B%20Copilot-orange.svg)](docs/multi-agent-methodology.md)
 [![Verification Gate](https://img.shields.io/badge/Quality-Gated-purple.svg)](AGENTS.md#6-task-lifecycle)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A battle-tested, **spec-first**, **agent-ready** project template engineered for high-velocity software development with autonomous AI coding agents and human engineers. Bootstrapped with the **Project Kickstart** methodology.
+A battle-tested, **spec-first**, **agent-ready** project template engineered for high-velocity software development with autonomous AI coding agents (Antigravity, GitHub Copilot) and human engineers. Bootstrapped with the **Project Kickstart** methodology.
 
 ---
 
 ## 🌟 Why This Template?
 
-Modern AI coding agents (Antigravity, GitHub Copilot, Claude Code, Cursor) are exceptionally fast at writing code, but they frequently encounter systemic failure modes in real-world repositories:
+Modern AI coding agents are exceptionally fast at writing code, but they frequently encounter systemic failure modes in real-world repositories:
 - **Context Drift:** Agents lose track of architecture decisions made 3 conversations ago.
 - **Hallucinated Constraints:** Guessing unverified external APIs or hardware capabilities.
 - **Chaos in Git History:** Uncontrolled parallel commits, broken main branches, and untracked rollbacks.
@@ -38,6 +39,7 @@ flowchart TD
         M["docs/05-roadmap.md<br/><b>Milestones (M0-M7)</b>"]
         Q["docs/06-qa-and-validation.md<br/><b>Empirical QA & NFRs</b>"]
         G["AGENTS.md<br/><b>Verification Gate & Operating Rules</b>"]
+        METH["docs/multi-agent-methodology.md<br/><b>Parallel & Cloud Orchestration</b>"]
     end
     subgraph Learning["Living Memory"]
         LL["docs/lessons-learned.md<br/><b>Continuous Feedback Loop</b>"]
@@ -47,6 +49,7 @@ flowchart TD
     V --> R --> A --> U --> M
     M --> G
     G --> Q
+    Q --> METH
     Q -.-> LL
     A -.-> ADR
 ```
@@ -55,11 +58,38 @@ Detailed guides for each document are available in the [Documentation Guide](doc
 
 ---
 
-### 2. Multi-Agent Orchestration & Sole Committer Protocol
-To prevent git merge collisions and untracked code commits during autonomous multi-agent execution:
-- **Lead Agent (Sole Committer):** The only agent with permission to run `git commit`, `git push`, tag releases, or close GitHub issues.
-- **Worker Subagents (`project-worker`):** Autonomous subagents that work in isolated git worktree branches on **disjoint files**. They run verification gates locally and return a structured completion report to the Lead Agent.
-- **Parallel Work (`⇉`):** Roadmap tasks marked with `⇉` in [`docs/05-roadmap.md`](docs/05-roadmap.md) can execute simultaneously without file contention.
+### 2. Dual-Agent Parallel Architecture: Antigravity + GitHub Copilot
+This template pioneers a hybrid **Hub-and-Spoke** division of labor combining local interactive reasoning with asynchronous cloud agent execution:
+
+```mermaid
+flowchart TD
+    USER["User / Product Owner"] -->|"High-Level Directives & Milestones"| LEAD["Lead Orchestrator (Antigravity)<br/>• Sole Committer to main<br/>• Decomposes milestones into bounded issues<br/>• Runs verification gate & merges PRs"]
+    
+    subgraph LOCAL["Local Worker Subagents (project-worker)"]
+        W1["Subagent: Tier 1 (Flash / Flash-Lite)<br/>Pure Logic, Schemas, Unit Tests"]
+        W2["Subagent: Tier 2 (Flash / Pro)<br/>UI Layouts, IPC, Platform Wrappers"]
+    end
+
+    subgraph CLOUD["Cloud Worker Agent (GitHub Copilot Agent)"]
+        COPILOT["GitHub Copilot Agent (Cloud / IDE)<br/>• Consumes agent_task.yml Issues<br/>• Scoped to disjoint file boundaries<br/>• Generates draft code & tests<br/>• Submits Draft Pull Requests"]
+    end
+    
+    LEAD -->|"Spawns in isolated branch"| W1
+    LEAD -->|"Spawns in isolated branch"| W2
+    LEAD -->|"Creates Issue via agent_task.yml"| COPILOT
+    
+    W1 -->|"Completion Report"| LEAD
+    W2 -->|"Completion Report"| LEAD
+    COPILOT -->|"Draft PR (task/<issue-id>-<desc>)"| LEAD
+    
+    LEAD -->|"Pulls branch locally & runs Verification Gate"| GATE{"Verification Gate<br/>Lint + Tests + Budgets"}
+    GATE -->|"Pass"| MERGE["git commit & git push origin main<br/>Close issue & update docs"]
+    MERGE --> GITHUB[("GitHub main & Releases")]
+```
+
+- **Antigravity (Local Lead Agent):** Acts as the Lead Architect and **Sole Committer**. It analyzes dependencies, defines self-contained issues using [`.github/ISSUE_TEMPLATE/agent_task.yml`](.github/ISSUE_TEMPLATE/agent_task.yml), verifies incoming pull requests locally, and updates documentation.
+- **GitHub Copilot Agent (Cloud Worker):** Acts as the **Fast Draft Implementer**. It consumes GitHub Issues in the cloud or IDE, adheres to [`.github/copilot-instructions.md`](.github/copilot-instructions.md), writes unit tests, and submits **Draft Pull Requests**. It is strictly forbidden from committing directly to `main`.
+- Read the full [Multi-Agent Methodology Guide](docs/multi-agent-methodology.md) for sequence diagrams and protocol details.
 
 ---
 
@@ -87,7 +117,7 @@ Tasks are categorized by complexity to optimize both execution speed and cogniti
 Whenever an agent receives a correction or experiences a runtime friction point:
 1. It does not simply apologize or quietly fix the code.
 2. It documents the root cause and creates an actionable rule in [`docs/lessons-learned.md`](docs/lessons-learned.md).
-3. Universal rules are promoted to [`AGENTS.md`](AGENTS.md) so every future agent session adheres to them immediately.
+3. Universal rules are promoted to [`AGENTS.md`](AGENTS.md) and [`.github/copilot-instructions.md`](.github/copilot-instructions.md) so every future agent session adheres to them immediately.
 
 ---
 
@@ -96,10 +126,12 @@ Whenever an agent receives a correction or experiences a runtime friction point:
 ```text
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
+│   │   ├── agent_task.yml          # Form template for delegating tasks to Copilot / subagents
+│   │   ├── agent_task.md           # Markdown template fallback for agent task issues
 │   │   ├── bug_report.yml          # Structured bug report with QA test IDs
 │   │   └── feature_request.yml     # Feature requests tied to MoSCoW priorities
-│   ├── copilot-instructions.md     # Instructions pointing GitHub Copilot to AGENTS.md
-│   └── pull_request_template.md    # PR template enforcing verification gate checks
+│   ├── copilot-instructions.md     # Binding instructions for GitHub Copilot (Agent & IDE)
+│   └── pull_request_template.md    # PR template enforcing verification gate checks & Draft PR rules
 ├── docs/
 │   ├── decisions/
 │   │   └── 0000-template.md        # Architecture Decision Record (ADR) skeleton
@@ -109,13 +141,14 @@ Whenever an agent receives a correction or experiences a runtime friction point:
 │   ├── 04-ux.md                    # Interaction flows, screens, and accessibility
 │   ├── 05-roadmap.md               # Sized milestone task board with parallel markers (⇉)
 │   ├── 06-qa-and-validation.md     # Empirical validation matrix & budget measurements
+│   ├── multi-agent-methodology.md  # Detailed Antigravity + Copilot collaboration guide
 │   ├── lessons-learned.md          # Living log of friction points and rules adopted
 │   ├── model-fallback-log.md       # Audit trail for downgraded agent runs
 │   ├── release-methodology.md      # SemVer, version source of truth, and release checklist
 │   └── README.md                   # Comprehensive guide to the documentation system
 ├── AGENTS.md                       # Binding operational rules and verification gate
 ├── CHANGELOG.md                    # Chronological milestone changelog
-├── CONTRIBUTING.md                 # Contribution and multi-agent pair programming guide
+├── CONTRIBUTING.md                 # Contribution, branching, and multi-agent pair programming guide
 ├── LICENSE                         # MIT License
 └── README.md                       # Repository overview and onboarding
 ```
@@ -167,7 +200,7 @@ M7: Retrospective         Review lessons learned and promote generic rules to to
 ## 🛡️ Operating Rules for AI Agents
 
 All AI assistants working on this repository must read and adhere to [`AGENTS.md`](AGENTS.md):
-1. **Always read documents in mandatory order:** Vision -> Requirements -> Architecture -> UX -> Roadmap -> Findings -> ADRs -> Lessons Learned.
+1. **Always read documents in mandatory order:** Vision -> Requirements -> Architecture -> UX -> Roadmap -> QA -> Methodology -> Decisions -> Lessons Learned.
 2. **Work on one roadmap task at a time:** Check off items in [`docs/05-roadmap.md`](docs/05-roadmap.md) with date and commit hash only after passing the verification gate.
 3. **Run the Verification Gate:** Every change must satisfy the verification gate commands before being considered complete.
 4. **Environment Resiliency:** Never assume standard toolchains are in `$PATH`; explicitly configure environment variables.

@@ -1,0 +1,80 @@
+name: "🤖 Agent Implementation Task"
+description: Standardized, bounded task specification for GitHub Copilot Agent or worker subagents
+title: "[Task]: "
+labels: ["agent-task", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template when preparing a bounded, self-contained implementation task for **GitHub Copilot Agent** or autonomous worker subagents. Tasks created with this template enforce the **Sole Committer Protocol** and project performance/safety budgets.
+  - type: input
+    id: objective
+    attributes:
+      label: 🎯 Task Objective
+      description: Concise statement of what needs to be implemented and why.
+      placeholder: e.g. Implement user profile validation logic and unit tests
+    validations:
+      required: true
+  - type: dropdown
+    id: complexity_tier
+    attributes:
+      label: 📊 Complexity Tier
+      description: Architectural workload classification for dynamic model selection.
+      options:
+        - "Tier 1 (Lean) — Pure logic, schemas, serialization, tests, i18n, docs"
+        - "Tier 2 (Moderate) — UI views, component layouts, IPC, standard platform APIs"
+        - "Tier 3 (Complex / Critical) — Concurrency, safety-critical routines, crypto, hot paths"
+    validations:
+      required: true
+  - type: input
+    id: target_module
+    attributes:
+      label: 📦 Target Module / Boundary
+      description: Scope work to a single module/package boundary whenever possible to prevent merge friction.
+      placeholder: e.g. src/core, packages/auth, crates/core
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: 📁 Target Files & Ownership
+      description: Explicit list of files the agent owns for this task.
+      placeholder: |
+        - src/core/validator.ts
+        - tests/core/validator.test.ts
+    validations:
+      required: true
+  - type: checkboxes
+    id: invariants
+    attributes:
+      label: 🛡️ Architectural & Safety Invariants
+      options:
+        - label: "Pure Logic: Deterministic logic isolated from side effects and OS dependencies"
+        - label: "Performance Budgets: Respect non-functional requirements (NFRs) defined in docs/02-requirements.md"
+        - label: "Safety & Memory: Zero unsafe operations without documented preconditions and invariants"
+        - label: "Localization: Zero hardcoded user-facing strings; all UI text goes through i18n files"
+        - label: "Claims Follow Evidence: Automated unit/invariant tests run locally; unverified behavior marked Pending"
+  - type: textarea
+    id: instructions
+    attributes:
+      label: 📝 Implementation Steps
+      description: Step-by-step instructions for the coding agent.
+      placeholder: |
+        1. Add new data models or methods to target module
+        2. Implement core validation algorithms
+        3. Write comprehensive unit tests for normal, boundary, and error conditions
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: ✅ Verifiable Acceptance Criteria
+      description: Checkbox list of verifiable outcomes.
+      value: |
+        - [ ] Unit tests added covering new logic and edge cases
+        - [ ] Linter / static analysis passes with zero warnings/errors
+        - [ ] Full test suite passes cleanly
+        - [ ] Build / compilation succeeds
+        - [ ] Delivered as a Draft PR on a feature branch (Sole Committer Protocol)
+    validations:
+      required: true

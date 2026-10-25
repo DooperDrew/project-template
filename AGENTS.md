@@ -16,14 +16,20 @@
 7. `docs/decisions/`: ADRs. Changing a decision requires a new ADR.
 8. `docs/lessons-learned.md` and `CHANGELOG.md`: history and pitfalls to avoid
 
-## 3. Roles (multi-agent)
+## 3. Continuous Learning & Self-Correction Rule
+Whenever the user corrects, redirects, or clarifies a requirement:
+- **Do not silently apply the change.**
+- You MUST explicitly formulate the takeaway as a rule and propose writing it into `docs/lessons-learned.md` (or `AGENTS.md` if binding).
+- This ensures that lessons learned in one chat session immediately persist for all subsequent sessions.
+
+## 4. Roles (multi-agent)
 - **Lead agent (sole committer):** the only one allowed to `git commit`, `git push`, tag, release, or close issues.
   Plans parallel work, reviews worker output, runs the verification gate, and syncs docs.
-- **Worker agents:** work in isolated branch workspaces on **disjoint files**. **Forbidden:** `git commit`, `git push`,
-  `git checkout main`, closing issues. They return the completion report defined in §7.
+- **Worker agents (`project-worker`):** work in isolated branch workspaces on **disjoint files**. **Forbidden:** `git commit`, `git push`,
+  `git checkout main`, closing issues. They deliver results via the completion report in §8.
 - Worker role names follow `<Tier>-<Domain>-<Milestone>` (e.g. `T1-Core-M1`).
 
-## 4. Complexity tiers & model selection
+## 5. Complexity tiers & model selection
 | Tier | Scope | Model |
 |---|---|---|
 | T1 Lean | pure logic, schemas, tests, i18n, docs, scripts | `flash_lite` / `flash` |
@@ -33,9 +39,9 @@
 Fallback order: `inherit` → `pro` → `flash` → `flash_lite`. Every fallback **must** be logged in
 `docs/model-fallback-log.md`, and a review task for it goes into the hardening milestone.
 
-## 5. Task lifecycle
-**Before:** find the task in the roadmap, restate the task + tier + target files + acceptance criteria, and check that `git status` is clean.
-**During:** respect the hard rules (§6). Unverified assumptions are marked 🔬 and probed, not guessed.
+## 6. Task lifecycle
+**Before:** find the task in the roadmap, restate the task + tier + target files + acceptance criteria, and check that `git status` is clean. Ensure toolchain PATH is initialized.
+**During:** respect the hard rules (§7). Unverified assumptions are marked 🔬 and probed, not guessed. Decouple headless tests from physical QA (keep manual QA as Pending).
 **Gate (must pass before finishing):**
 ```
 {{VERIFICATION_GATE_COMMANDS}}
@@ -43,14 +49,16 @@ Fallback order: `inherit` → `pro` → `flash` → `flash_lite`. Every fallback
 **After (lead only):** tick the roadmap box (date + commit), add a CHANGELOG entry, update docs/ADRs if the design changed,
 add any lesson to `docs/lessons-learned.md`, commit (`M<x>.<y>: <summary>`), push, and update the issue.
 
-## 6. Hard rules
+## 7. Hard rules
 {{PROJECT_HARD_RULES — performance budgets, safety constraints, forbidden techniques, security rules}}
-- Never claim a test, benchmark, or QA item passed without having run it. Hardware/manual QA stays `Pending` until the user confirms.
-- Keep claims in docs factual. No marketing language in engineering docs.
+- **Claims follow evidence:** Never claim a test, benchmark, or QA item passed without having run it. Hardware/manual QA stays `Pending` until the user confirms.
+- **Keep claims in docs factual:** Avoid marketing language ("pioneering", "zero bugs") in technical specs while QA is pending.
+- **Environment resiliency:** Prepend `$env:USERPROFILE\.cargo\bin` (or relevant toolchain) in PowerShell commands to guard against PATH omissions.
+- **Test concurrency:** Tests touching global OS resources (pipes, sockets, registry, hooks) must use unique names and timeout protection to prevent test hangs.
 - User-facing strings go through i18n files. Don't hardcode UI text.
 - Files are UTF-8. Never commit build artifacts (e.g. `dist/`, `target/`); releases go to GitHub Releases.
 
-## 7. Worker completion report (required format)
+## 8. Worker completion report (required format)
 ```markdown
 ### WORKER COMPLETION REPORT: <Role>
 - Task: <ID + description>
@@ -61,9 +69,9 @@ add any lesson to `docs/lessons-learned.md`, commit (`M<x>.<y>: <summary>`), pus
 - Open issues / risks / follow-ups: <list>
 ```
 
-## 8. Escalation
+## 9. Escalation
 If reality contradicts the docs (tests, hardware, external API behaviour): **stop**, report the evidence to the user,
 propose a probe, and update the docs only after the user agrees.
 
-## 9. Build & run
+## 10. Build & run
 {{BUILD_RUN_COMMANDS}}

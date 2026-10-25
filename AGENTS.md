@@ -53,11 +53,12 @@ add any lesson to `docs/lessons-learned.md`, commit (`M<x>.<y>: <summary>`), pus
 
 ## 7. Hard rules
 {{PROJECT_HARD_RULES — performance budgets, safety constraints, forbidden techniques, security rules}}
+- **GitHub Governance (Milestones, Issues & Releases):** Every roadmap milestone (`M0`..`Mn`) MUST have a corresponding GitHub Milestone and tracked GitHub Issues. Completed tasks close their issue with a commit/release reference; pending hardware/manual QA stays open in its milestone. Every release MUST attach a pre-built downloadable bundle (`.zip` / installer) on GitHub Releases via `gh release create` even while physical hardware QA remains `Pending`.
 - **Claims follow evidence:** Never claim a test, benchmark, or QA item passed without having run it. Hardware/manual QA stays `Pending` until the user confirms.
 - **Keep claims in docs factual:** Avoid marketing language ("pioneering", "zero bugs") in technical specs while QA is pending.
 - **Environment resiliency:** Never assume standard toolchains are in `$PATH`. Prepend `$env:USERPROFILE\.cargo\bin` (or relevant toolchain) in PowerShell commands to guard against PATH omissions.
 - **Test concurrency:** Tests touching global OS resources (pipes, sockets, registry, hooks) must use unique names and timeout protection to prevent test hangs.
-- **Windows / PowerShell hygiene:** When writing files from PowerShell, force UTF-8 (`Set-Content -Encoding utf8`). Prefer dedicated file-writing tools over shell redirection. Use `;` rather than `&&` on Windows PowerShell 5. Avoid unconstrained recursive searches over dependency caches (`node_modules`, `target`, `.venv`).
+- **Windows / PowerShell hygiene:** When writing files from PowerShell, force UTF-8 without BOM (`[System.IO.File]::WriteAllText(..., [System.Text.UTF8Encoding]::new($false))` or `Set-Content -Encoding utf8`) and set `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8` before capturing external CLI stdout (`gh`, `git`). Prefer dedicated file-writing tools over shell redirection. Use `;` rather than `&&` on Windows PowerShell 5. Avoid unconstrained recursive searches over dependency caches (`node_modules`, `target`, `.venv`).
 - User-facing strings go through i18n files. Don't hardcode UI text.
 - Files are UTF-8. Never commit build artifacts (e.g. `dist/`, `target/`); releases go to GitHub Releases.
 

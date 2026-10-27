@@ -13,10 +13,12 @@
 4. `docs/04-ux.md`: UI/UX spec (if present)
 5. `docs/05-roadmap.md`: **the single source of truth for tasks**
 6. `docs/06-qa-and-validation.md`: verification matrices, NFR measurements, and empirical testing
-7. `docs/<spike>-findings.md`: verified ground truth from M0 spikes. Don't contradict or guess beyond it.
-8. `docs/decisions/`: ADRs. Changing a decision requires a new ADR.
-9. `docs/multi-agent-methodology.md`: parallel worker orchestration, Copilot cloud integration, and reporting templates
-10. `docs/lessons-learned.md` and `CHANGELOG.md`: history and pitfalls to avoid
+7. `docs/m0-spike-findings.md`: verified ground truth from M0 spikes. Don't contradict or guess beyond it.
+8. `docs/07-ux-and-improvements.md`: UX polish, onboarding flows, and product evolution backlog
+9. `docs/08-community-and-growth-strategy.md`: distribution channels (WinGet, Scoop) and crowdsourced QA
+10. `docs/multi-agent-methodology.md`: parallel worker orchestration, Copilot cloud integration, and reporting templates
+11. `docs/decisions/`: ADRs. Changing a decision requires a new ADR.
+12. `docs/lessons-learned.md`, `docs/retrospective.md`, and `CHANGELOG.md`: history, pitfalls to avoid, and past retrospective findings
 
 ## 3. Continuous Learning & Self-Correction Rule
 Whenever the user corrects, redirects, or clarifies a requirement:
@@ -53,7 +55,7 @@ add any lesson to `docs/lessons-learned.md`, commit (`M<x>.<y>: <summary>`), pus
 
 ## 7. Hard rules
 {{PROJECT_HARD_RULES — performance budgets, safety constraints, forbidden techniques, security rules}}
-- **GitHub Governance (Milestones, Issues & Releases):** Every roadmap milestone (`M0`..`Mn`) MUST have a corresponding GitHub Milestone and tracked GitHub Issues. Completed tasks close their issue with a commit/release reference; pending hardware/manual QA stays open in its milestone. Every release MUST attach a pre-built downloadable bundle (`.zip` / installer) on GitHub Releases via `gh release create` even while physical hardware QA remains `Pending`.
+- **GitHub Governance (Milestones, Issues & Releases):** Every roadmap milestone (`M0`..`Mn`) MUST have a corresponding GitHub Milestone and tracked GitHub Issues. Completed tasks close their issue with a commit/release reference; pending hardware/manual QA stays open in its milestone. Every release MUST attach a pre-built downloadable bundle (`.zip` / installer) on GitHub Releases via `gh release create` (or `.github/workflows/release.yml`) even while physical hardware QA remains `Pending`.
 - **Claims follow evidence:** Never claim a test, benchmark, or QA item passed without having run it. Hardware/manual QA stays `Pending` until the user confirms.
 - **Keep claims in docs factual:** Avoid marketing language ("pioneering", "zero bugs") in technical specs while QA is pending.
 - **Environment resiliency:** Never assume standard toolchains are in `$PATH`. Prepend `$env:USERPROFILE\.cargo\bin` (or relevant toolchain) in PowerShell commands to guard against PATH omissions.

@@ -1,0 +1,53 @@
+name: "🧪 Empirical QA & Hardware Verification Report"
+description: "Submit an empirical verification report from manual, hardware, or end-to-end QA testing"
+title: "[QA] <Component / Environment>: <Verification Summary>"
+labels: ["qa-verification", "evidence"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to submit empirical verification evidence for test matrix items in `docs/06-qa-and-validation.md`.
+        Remember the **Claims Follow Evidence** rule: tests remain marked `Pending` until verified with documented evidence.
+  - type: input
+    id: environment
+    attributes:
+      label: 🖥️ Test Environment & Platform
+      description: OS version, architecture, browser, or connected hardware devices.
+      placeholder: e.g. Windows 11 23H2 x64, macOS Sonoma 14.4, or Connected Hardware Model
+    validations:
+      required: true
+  - type: input
+    id: version_tested
+    attributes:
+      label: 📦 Software Version / Commit Tested
+      description: The exact release tag, commit hash, or build tested.
+      placeholder: e.g. v0.2.0 or commit 3b5904d
+    validations:
+      required: true
+  - type: textarea
+    id: test_matrix_results
+    attributes:
+      label: 📋 Test Matrix Checklist & Procedures
+      description: List the test IDs from docs/06-qa-and-validation.md and their empirical outcomes.
+      value: |
+        - [ ] **QA-01 (Core Functionality):** PASS | FAIL — Notes: 
+        - [ ] **QA-02 (Boundary & Error Cases):** PASS | FAIL — Notes: 
+        - [ ] **QA-03 (UI & Interaction Flows):** PASS | FAIL — Notes: 
+        - [ ] **QA-SYS-01 (System Edge Cases & Recovery):** PASS | FAIL — Notes: 
+    validations:
+      required: true
+  - type: textarea
+    id: empirical_evidence
+    attributes:
+      label: 🔬 Empirical Evidence & Logs
+      description: Paste relevant benchmark numbers, console/log outputs, screenshots, or probe findings.
+      placeholder: Paste terminal output, benchmark metrics, or test logs here...
+    validations:
+      required: true
+  - type: textarea
+    id: observations_and_regressions
+    attributes:
+      label: ⚠️ Observations, Quirks & Potential Regressions
+      description: Any unexpected timing quirks, UI glitches, or performance deviations noticed.
+    validations:
+      required: false

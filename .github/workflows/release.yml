@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Publish Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Toolchain setup placeholder (uncomment and configure for your stack)
+      # - name: Setup Toolchain
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+
+      - name: Package Release Bundle
+        shell: pwsh
+        run: |
+          if (Test-Path "scripts/package-release.ps1") {
+            powershell -ExecutionPolicy Bypass -File scripts/package-release.ps1 -Version "$($env:GITHUB_REF_NAME)".TrimStart('v')
+          } else {
+            $stage = "release-$($env:GITHUB_REF_NAME)-windows-x64"
+            New-Item -ItemType Directory -Path $stage -Force
+            Copy-Item README.md, LICENSE, CHANGELOG.md $stage\ -ErrorAction SilentlyContinue
+            Compress-Archive -Path $stage -DestinationPath "$stage.zip"
+            echo "RELEASE_BUNDLE=$stage.zip" >> $env:GITHUB_ENV
+          }
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.zip
+            ${{ env.RELEASE_BUNDLE }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false

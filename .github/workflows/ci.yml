@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  verification-gate:
+    name: Verification Gate
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Toolchain setup placeholder (uncomment and configure for your stack)
+      # - name: Setup Toolchain (e.g., Rust / Node.js / Python / Go)
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+
+      # Verification commands (aligned with AGENTS.md §6)
+      - name: Run Verification Gate
+        shell: pwsh
+        run: |
+          Write-Host "Running Verification Gate..."
+          # Replace with project verification commands:
+          # 1. Format check
+          # 2. Strict linter (warnings treated as errors)
+          # 3. Automated test suite
+          # 4. Production build check
+          Write-Host "Verification gate passed cleanly."

@@ -18,18 +18,28 @@ flowchart TD
     D4["04-ux.md<br/><b>UX & Interaction Flows</b><br/><i>How is it experienced?</i>"]
     D5["05-roadmap.md<br/><b>Milestones & Task Board</b><br/><i>What do we build next?</i>"]
     D6["06-qa-and-validation.md<br/><b>QA & Empirical Validation</b><br/><i>How is it verified?</i>"]
-    METH["multi-agent-methodology.md<br/><b>Multi-Agent Orchestration</b><br/><i>How do Antigravity & Copilot collaborate?</i>"]
+    SPK["m0-spike-findings.md<br/><b>Empirical Spike Findings</b><br/><i>Ground truth from M0 spikes</i>"]
+    D7["07-ux-and-improvements.md<br/><b>UX & Onboarding Backlog</b><br/><i>Setup wizard & responsive refactor</i>"]
+    D8["08-community-and-growth-strategy.md<br/><b>Distribution & Community</b><br/><i>WinGet, Scoop, & ecosystem</i>"]
+    METH["multi-agent-methodology.md<br/><b>Multi-Agent Orchestration</b><br/><i>Antigravity + Copilot collaboration</i>"]
+    UG["user-guide.md<br/><b>User Documentation</b><br/><i>User manual & troubleshooting FAQ</i>"]
     ADR["decisions/<br/><b>Architecture Decision Records</b><br/><i>Why did we choose X over Y?</i>"]
     LL["lessons-learned.md<br/><b>Continuous Learning Log</b><br/><i>What pitfalls did we hit?</i>"]
+    RETRO["retrospective.md<br/><b>Milestone Retrospective</b><br/><i>Lessons & metrics extraction</i>"]
 
     D1 --> D2
     D2 --> D3
     D3 --> D4
     D4 --> D5
     D5 --> D6
-    D6 --> METH
+    D6 --> SPK
+    SPK --> D7
+    D7 --> D8
+    D8 --> METH
+    METH --> UG
     D3 -.-> ADR
     D6 -.-> LL
+    LL -.-> RETRO
 ```
 
 ---
@@ -44,11 +54,16 @@ flowchart TD
 | [`04-ux.md`](04-ux.md) | **Interaction Model** | UI screens, state diagrams (empty/loading/error/success), entry points (CLI/desktop/web), keyboard shortcuts, accessibility, and i18n rules. |
 | [`05-roadmap.md`](05-roadmap.md) | **Single Source of Truth for Work** | Phased milestones (M0 through M7). Parallel tasks marked with `⇉`. Checked off with date and git commit ID upon verification. |
 | [`06-qa-and-validation.md`](06-qa-and-validation.md) | **Empirical Proof & Test Matrices** | Empirical measurements of NFR budgets, real-environment hardware/manual QA matrices, edge case regressions, and incident reporting. |
+| [`m0-spike-findings.md`](m0-spike-findings.md) | **Spike Ground Truth** | Empirical results and terminal outputs from Milestone 0 diagnostic spikes, de-risking APIs and hardware before core development. |
+| [`07-ux-and-improvements.md`](07-ux-and-improvements.md) | **UX & Onboarding Backlog** | Specifications for guided installation wizards, first-run onboarding flows, responsive layout refactors, and post-v1 polish. |
+| [`08-community-and-growth-strategy.md`](08-community-and-growth-strategy.md) | **Distribution & Community Strategy** | Multi-channel package distribution (WinGet, Scoop, registries), crowdsourced QA testing, and ecosystem expansion. |
 | [`multi-agent-methodology.md`](multi-agent-methodology.md) | **Parallel & Cloud Agent Orchestration** | Hub-and-Spoke model, Sole Committer Protocol, complexity tiers, GitHub Copilot cloud agent integration, and Draft PR workflows. |
+| [`user-guide.md`](user-guide.md) | **End-User Documentation** | Installation options, getting started guide, configuration reference, keyboard shortcuts, and troubleshooting FAQ. |
 | [`decisions/`](decisions/) | **Architecture Decision Records (ADR)** | Lightweight records using [`0000-template.md`](decisions/0000-template.md) capturing context, choices considered, and rationale. |
 | [`lessons-learned.md`](lessons-learned.md) | **Living Memory & Rules Engine** | Feedback log turning user corrections and debugging insights into enforceable engineering rules. Generic rules tagged `[KIT]` feed back into upstream tooling. |
 | [`model-fallback-log.md`](model-fallback-log.md) | **Model Routing & Quota Audit** | Audit log tracking tasks run on fallback or lower-tier models, creating mandatory review items during M5 hardening. |
-| [`release-methodology.md`](release-methodology.md) | **Release Engineering** | SemVer definitions, single source of version truth, release checklist, tagging procedure, and GitHub release automation. |
+| [`release-methodology.md`](release-methodology.md) | **Release Engineering** | SemVer definitions, single source of version truth, automated release scripts (`scripts/package-release.ps1`), and GitHub Actions release automation. |
+| [`retrospective.md`](retrospective.md) | **Milestone Retrospective** | Timeline, empirical failure analysis, multi-agent token economics, and lessons promoted to global guidelines. |
 
 ---
 
@@ -77,5 +92,5 @@ When you initialize a project from this template:
 1. Run the `/project-kickstart` skill with an Antigravity agent or answer the discovery interview questions.
 2. The agent fills each template placeholder (`{{PROJECT_NAME}}`, `{{...}}`) with specific domain requirements.
 3. Review and approve the generated draft specs in `docs/`.
-4. Run Milestone 0 spikes to de-risk unknown APIs or hardware requirements.
+4. Run Milestone 0 spikes to de-risk unknown APIs or hardware requirements and document findings in [`m0-spike-findings.md`](m0-spike-findings.md).
 5. Transition the roadmap into active execution!
